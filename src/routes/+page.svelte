@@ -1,31 +1,130 @@
 <script lang="ts">
 	import Icon from './Icon.svelte';
+	import * as Popover from '$lib/components/ui/popover';
+	import { Link, links } from './store';
+	import { onMount } from 'svelte';
 
-	class Link {
-		title: string;
-		href: string;
+	let newTitle: string = '';
+	let newHref: string = '';
 
-		constructor(title: string, href: string) {
-			this.title = title;
-			this.href = href;
-		}
+	// Function to load links from Local Storage
+	function loadLinksFromLocalStorage(): Link[] {
+		const storedLinks = localStorage.getItem('links');
+		return storedLinks ? JSON.parse(storedLinks) : [];
 	}
 
-	const links: Link[] = [
+	onMount(() => {
+		// Initialize links from Local Storage or use a default list
+		$links = loadLinksFromLocalStorage();
+	});
+
+	var testLinks: Link[] = [
 		new Link('GitHub', 'https://github.com/'),
 		new Link('Twitter', 'https://twitter.com/'),
 		new Link('Discord', 'https://discord.com/'),
-		new Link('YouTube', 'https://youtube.com/')
+		new Link('YouTube', 'https://youtube.com/'),
+		new Link('Google', 'https://google.com/'),
+		new Link('Facebook', 'https://facebook.com/'),
+		new Link('LinkedIn', 'https://linkedin.com/'),
+		new Link('Stack Overflow', 'https://stackoverflow.com/'),
+		new Link('Reddit', 'https://reddit.com/'),
+		new Link('Amazon', 'https://amazon.com/'),
+		new Link('Netflix', 'https://netflix.com/'),
+		new Link('Spotify', 'https://spotify.com/'),
+		new Link('Instagram', 'https://instagram.com/'),
+		new Link('Twitch', 'https://twitch.tv/'),
+		new Link('Medium', 'https://medium.com/'),
+		new Link('Wikipedia', 'https://wikipedia.org/'),
+		new Link('Bitbucket', 'https://bitbucket.org/'),
+		new Link('GitLab', 'https://gitlab.com/'),
+		new Link('Dev.to', 'https://dev.to/'),
+		new Link('CodePen', 'https://codepen.io/'),
+		new Link('Dribbble', 'https://dribbble.com/'),
+		new Link('Behance', 'https://behance.net/'),
+		new Link('Product Hunt', 'https://producthunt.com/'),
+		new Link('Hacker News', 'https://news.ycombinator.com/')
 	];
+
+	function createNewIcon() {
+		if (newTitle && newHref) {
+			$links.push(new Link(newTitle, newHref));
+			$links = $links; // update
+
+			newTitle = '';
+			newHref = '';
+		}
+	}
 </script>
 
 <div class="h-full w-full bg-slate-950">
-	<div class="h-full w-full p-20">
-		<div class="grid h-full w-full grid-cols-4 place-items-center gap-3 md:grid-cols-6">
-			{#each links as { title, href }}
+	<div class="h-full w-full p-10 md:p-20">
+		<div
+			class="grid h-full w-full grid-cols-4 grid-rows-6 place-items-center gap-3 rounded-lg md:grid-cols-6 md:grid-rows-5 transition-transform"
+		>
+			{#each $links as { title, href }}
 				<Icon {title} {href}></Icon>
 			{/each}
-            <Icon title='' href='' isPlus={true}></Icon>
+
+			<!-- svelte-ignore a11y-no-static-element-interactions -->
+			<div>
+				<Popover.Root onOutsideClick={createNewIcon}>
+					<Popover.Trigger>
+						<!-- svelte-ignore a11y-click-events-have-key-events -->
+						<!-- svelte-ignore a11y-no-static-element-interactions -->
+						<div class="mx-auto h-12 w-12 md:h-16 md:w-16">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="1.5"
+								stroke="currentColor"
+								class="rounded-md bg-slate-50/20 stroke-slate-200 p-3"
+							>
+								<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+							</svg>
+						</div>
+						<p class="py-2 text-center font-bold text-white">New Link</p></Popover.Trigger
+					>
+					<Popover.Content class="border-0 bg-slate-500/25 backdrop-blur-md">
+						<div>
+							<p class="text-white">Title</p>
+							<input
+								type="text"
+								bind:value={newTitle}
+								class="m-2 mx-auto h-10 w-full rounded-md bg-stone-300/20 p-2 text-white"
+							/>
+						</div>
+
+						<div>
+							<p class="text-white">URL</p>
+							<input
+								type="text"
+								bind:value={newHref}
+								class="m-2 mx-auto h-10 w-full rounded-md bg-stone-300/20 p-2 text-white"
+							/>
+						</div>
+					</Popover.Content>
+				</Popover.Root>
+			</div>
+			<div>
+				<div class="mx-auto h-12 w-12 md:h-16 md:w-16">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke-width="1.5"
+						stroke="currentColor"
+						class="rounded-md bg-slate-50/20 stroke-slate-200 p-3"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+						/>
+					</svg>
+				</div>
+				<p class="py-2 text-center font-bold text-white">Trash Can</p>
+			</div>
 		</div>
 	</div>
 </div>
