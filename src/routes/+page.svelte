@@ -61,7 +61,7 @@
 	}
 </script>
 
-<div class="h-full w-full bg-slate-950">
+<div class="h-full w-full bg-stone-900">
 	<div class="h-full w-full p-10 md:p-20">
 		<div
 			class="grid h-full w-full grid-cols-4 grid-rows-6 place-items-center gap-3 rounded-lg transition-transform md:grid-cols-6 md:grid-rows-5"
