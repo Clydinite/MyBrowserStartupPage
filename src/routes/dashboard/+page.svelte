@@ -129,7 +129,7 @@
 				<Popover.Trigger>
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
 					<!-- svelte-ignore a11y-no-static-element-interactions -->
-					<div class="mx-auto h-8 w-8 sm:h-12 sm:w-12 md:h-16 md:w-16">
+					<div class="mx-auto h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"

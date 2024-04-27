@@ -1,5 +1,5 @@
 <script lang="ts">
-	import '../app.pcss';	
+	import '../app.pcss';
 	import { onMount } from 'svelte';
 
 	import { auth, db } from '$lib/firebase';
@@ -33,7 +33,7 @@
 			const docSnap = await getDoc(docRef);
 
 			// this is the data we'll get from the firestore and will be set to authStore
-			let dataToSetToStore: { email: string; links: { title: string; href: string }[] } ;
+			let dataToSetToStore: { email: string; links: { title: string; href: string }[] };
 
 			// if the user doesn't exist in firestore
 			if (!docSnap.exists()) {
@@ -68,7 +68,6 @@
 					user: user
 				};
 			});
-
 		});
 
 		return unsubscribe;
