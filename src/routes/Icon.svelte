@@ -1,12 +1,6 @@
 <script lang="ts">
-	
-
 	export let title: string;
 	export let href: string;
-
-	let newTitle = title;
-	let newHref = href;
-
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
