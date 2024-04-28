@@ -1,3 +1,4 @@
+<!-- Based on the tutorial by Smoljames, thank you for the guidance. -->
 <script lang="ts">
 	import { authHandlers } from '$lib/stores/auth_store';
 
@@ -140,7 +141,7 @@
 		display: flex;
 		flex-direction: column;
 	}
-	
+
 	.auth-container {
 		display: flex;
 		flex-direction: column;

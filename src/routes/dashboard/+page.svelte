@@ -5,6 +5,9 @@
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import { Button } from '$lib/components/ui/button';
 
+	import DeleteIcon from '$lib/svg-icons/DeleteIcon.svelte';
+	import AddIcon from '$lib/svg-icons/AddIcon.svelte';
+
 	import { db } from '$lib/firebase';
 	import { authHandlers, authStore } from '$lib/stores/auth_store';
 	import { doc, getDoc, setDoc } from 'firebase/firestore';
@@ -13,13 +16,10 @@
 	let newHref = '';
 
 	// TODO: add a way to reorder the links by dragging
-	// TODO: store data into a database
-	// TODO: authentication, create accounts, and store user data
 
 	function createIcon() {
 		if (newTitle && newHref) {
-			$authStore.links.push({ title: newTitle, href: newHref });
-			$authStore.links = $authStore.links; // update
+			$authStore.links = [...$authStore.links, { title: newTitle, href: newHref }];
 
 			newTitle = '';
 			newHref = '';
@@ -30,6 +30,16 @@
 		if (newTitle && newHref) {
 			$authStore.links[index] = { title: newTitle, href: newHref };
 		}
+		newTitle = '';
+		newHref = '';
+	}
+
+	function deleteIcon(index: number) {
+		newTitle = '';
+		newHref = '';
+
+		// clear the data first. otherwise, when the context menu is closed (when clicking the delete button), updateIcon will also be called, adding the already-deleted data back into the array
+		$authStore.links = $authStore.links.filter((_, i) => i !== index);
 	}
 
 	async function saveLinks() {
@@ -44,18 +54,18 @@
 	}
 
 	authStore.subscribe((current) => {
-		console.log(current.links);
-		saveLinks();
+		console.log(current);
+		if (current.user) saveLinks();
 	});
 </script>
 
-<div class="h-full w-full bg-gray-950 p-5 sm:p-10 md:p-20">
-	<div class="mb-5 flex h-8 w-full items-center justify-end">
-		<Button class="h-8 bg-gray-700 text-white" on:click={authHandlers.logout}>Logout</Button>
+<div class="md:p-15 flex h-full w-full flex-col bg-gray-950 p-5 sm:p-8">
+	<div class="mb-5 flex h-8 w-full justify-end">
+		<Button class="h-8 bg-slate-500/25 text-white font-bold" on:click={authHandlers.logout}>Logout</Button>
 	</div>
 
 	<div
-		class="grid h-full w-full grid-cols-4 grid-rows-6 place-items-center gap-3 rounded-lg transition-transform md:grid-cols-6 md:grid-rows-5"
+		class="grid flex-grow grid-cols-4 grid-rows-6 gap-3 rounded-lg transition-transform md:grid-cols-6 md:grid-rows-5"
 	>
 		{#each $authStore.links as { title, href }, index}
 			<ContextMenu.Root
@@ -92,28 +102,12 @@
 
 					<ContextMenu.Item
 						class="rounded-button mt-2 select-none items-center rounded-md bg-slate-50/20"
-						on:click={() => {
-							$authStore.links.splice(index, 1);
-							$authStore.links = $authStore.links; // update
-						}}
+						on:click={() => deleteIcon(index)}
 					>
 						<div>
 							<div class="flex items-center">
 								<div class="mx-auto h-14 w-14">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke-width="1.5"
-										stroke="currentColor"
-										class="stroke-slate-200 p-3"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-										/>
-									</svg>
+									<DeleteIcon />
 								</div>
 								<p class="text-white">Delete</p>
 							</div>
@@ -124,24 +118,15 @@
 		{/each}
 
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
-		<div>
+		<div class="flex items-start justify-center">
 			<Popover.Root onOutsideClick={createIcon}>
 				<Popover.Trigger>
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
 					<!-- svelte-ignore a11y-no-static-element-interactions -->
 					<div class="mx-auto h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke-width="1.5"
-							stroke="currentColor"
-							class="rounded-md bg-slate-50/20 stroke-slate-200 object-cover p-3"
-						>
-							<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-						</svg>
+						<AddIcon />
 					</div>
-					<p class="text-nowrap py-2 text-center text-sm font-bold text-white sm:text-base">
+					<p class="text-wrap text-sm sm:text-base py-2 text-center font-bold text-white">
 						New Link
 					</p></Popover.Trigger
 				>
