@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
+
 	import Icon from '../Icon.svelte';
 
 	import * as Popover from '$lib/components/ui/popover';
@@ -55,13 +58,21 @@
 
 	authStore.subscribe((current) => {
 		console.log(current);
-		if (current.user) saveLinks();
+
+		if (current.user) {
+			saveLinks();
+			if (browser) {
+				localStorage.setItem('links', JSON.stringify($authStore.links));
+			}
+		}
 	});
 </script>
 
 <div class="md:p-15 flex h-full w-full flex-col bg-gray-950 p-5 sm:p-8">
 	<div class="mb-5 flex h-8 w-full justify-end">
-		<Button class="h-8 bg-slate-500/25 text-white font-bold" on:click={authHandlers.logout}>Logout</Button>
+		<Button class="h-8 bg-slate-500/25 font-bold text-white" on:click={authHandlers.logout}
+			>Logout</Button
+		>
 	</div>
 
 	<div
@@ -126,7 +137,7 @@
 					<div class="mx-auto h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16">
 						<AddIcon />
 					</div>
-					<p class="text-wrap text-sm sm:text-base py-2 text-center font-bold text-white">
+					<p class="text-wrap py-2 text-center text-sm font-bold text-white sm:text-base">
 						New Link
 					</p></Popover.Trigger
 				>

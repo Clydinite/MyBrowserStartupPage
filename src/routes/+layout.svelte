@@ -11,6 +11,10 @@
 	onMount(() => {
 		console.log('mounted');
 
+		// cached links
+		$authStore.links = JSON.parse(localStorage.getItem('links') || '[]');
+		console.log('cached data', $authStore.links);
+
 		// called when the component is unmounted
 		const unsubscribe = auth.onAuthStateChanged(async (user) => {
 			const path = window.location.pathname;
@@ -68,6 +72,8 @@
 					user: user
 				};
 			});
+
+			console.log('fetched data', $authStore);
 		});
 
 		return unsubscribe;
