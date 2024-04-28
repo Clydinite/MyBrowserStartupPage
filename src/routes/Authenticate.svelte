@@ -220,6 +220,7 @@
 	h1 {
 		text-align: center;
 		font-size: 3rem;
+		font-weight: bold;
 	}
 
 	.above,
