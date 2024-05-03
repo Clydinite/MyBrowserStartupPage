@@ -68,7 +68,7 @@
 	});
 </script>
 
-<div class="md:p-15 flex h-full w-full flex-col bg-gray-950 p-5 sm:p-8">
+<div class="md:p-15 flex h-full w-full flex-col  p-5 sm:p-8">
 	<div class="mb-5 flex h-8 w-full justify-end">
 		<Button class="h-8 bg-slate-500/25 font-bold text-white" on:click={authHandlers.logout}
 			>Logout</Button

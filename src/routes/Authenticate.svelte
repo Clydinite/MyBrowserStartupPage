@@ -1,4 +1,3 @@
-<!-- Based on the tutorial by Smoljames, thank you for the guidance. -->
 <script lang="ts">
 	import { authHandlers } from '$lib/stores/auth_store';
 
@@ -37,7 +36,7 @@
 
 <div class="main-container">
 	<div class="auth-container">
-		<form action="">
+		<form action="" method="post">
 			<h1>{register ? 'Register' : 'Login'}</h1>
 
 			{#if error}
