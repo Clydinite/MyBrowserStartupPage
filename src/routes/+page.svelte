@@ -13,17 +13,27 @@
 	}
 
 	let register = false;
+	let error = false;
+	let authenticating = false;
 
 	async function handleAuthenticate() {
 		if (!form) return;
+		authenticating = true;
 
 		const email = form.form.data.email;
 		const password = form.form.data.password;
 
-		if (register) {
-			await authHandlers.signup(email, password);
-		} else {
-			await authHandlers.login(email, password);
+		try {
+			if (register) {
+				await authHandlers.signup(email, password);
+			} else {
+				await authHandlers.login(email, password);
+			}
+		} catch (err) {
+			console.error(err);
+			error = true;
+		} finally {
+			authenticating = false;
 		}
 	}
 </script>
@@ -33,10 +43,16 @@
 
 	<h1 class="mb-5 text-5xl font-bold">{register ? 'Register' : 'Login'}</h1>
 
+	{#if error}
+		<p class="text-sm font-medium text-destructive">
+			There's something wrong with email or password.
+		</p>
+	{/if}
+
 	{#if register}
-		<RegisterForm data={data.registerForm} />
+		<RegisterForm data={data.registerForm} {authenticating} />
 	{:else}
-		<LoginForm data={data.loginForm} />
+		<LoginForm data={data.loginForm} {authenticating} />
 	{/if}
 
 	<div class="mb-4 inline-flex w-full items-center justify-center gap-2">

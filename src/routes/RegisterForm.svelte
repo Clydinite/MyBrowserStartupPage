@@ -6,8 +6,6 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import Spinner from '$lib/svg-icons/Spinner.svelte';
 
-	let authenticating = false;
-
 	export let data: SuperValidated<Infer<RegisterSchema>>;
 
 	const form = superForm(data, {
@@ -16,6 +14,8 @@
 	});
 
 	const { form: formData, enhance } = form;
+
+	export let authenticating: boolean;
 </script>
 
 <form method="POST" action="?/register" use:enhance>
@@ -50,7 +50,7 @@
 		<Form.FieldErrors />
 	</Form.Field>
 
-	<Form.Button class="my-5 w-full font-bold" on:click={() => (authenticating = true)}>
+	<Form.Button class="my-5 w-full font-bold">
 		{#if !authenticating}
 			Submit
 		{:else}
