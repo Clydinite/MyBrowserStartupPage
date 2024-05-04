@@ -14,6 +14,6 @@
 				class="mx-auto h-10 w-10 rounded-md object-cover sm:h-12 sm:w-12 md:h-16 md:w-16"
 			/>
 		</div>
-		<p class="text-wrap text-sm sm:text-base py-2 text-center font-bold text-white">{title}</p>
+		<p class="text-wrap text-xs sm:text-sm py-2 text-center font-bold text-white">{title}</p>
 	</a>
 </div>

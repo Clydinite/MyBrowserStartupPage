@@ -68,15 +68,18 @@
 	});
 </script>
 
-<div class="md:p-15 flex h-full w-full flex-col  p-5 sm:p-8">
-	<div class="mb-5 flex h-8 w-full justify-end">
-		<Button class="h-8 bg-slate-500/25 font-bold text-white" on:click={authHandlers.logout}
+<div class="md:p-15 flex h-full w-full flex-col p-5 sm:p-8">
+	<div class="mb-5 flex w-full items-center justify-between">
+		<a href="https://github.com/Clydinite/MyBrowserStartupPage" class="font-bold"
+			>MyBrowserStartupPage</a
+		>
+		<Button class="bg-slate-500/25 font-bold text-white" on:click={authHandlers.logout}
 			>Logout</Button
 		>
 	</div>
 
 	<div
-		class="grid flex-grow grid-cols-4 grid-rows-6 gap-3 rounded-lg transition-transform md:grid-cols-6 md:grid-rows-5"
+		class="grid flex-grow grid-cols-4 auto-rows-min gap-3 rounded-lg transition-transform md:grid-cols-6"
 	>
 		{#each $authStore.links as { title, href }, index}
 			<ContextMenu.Root
@@ -137,7 +140,7 @@
 					<div class="mx-auto h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16">
 						<AddIcon />
 					</div>
-					<p class="text-wrap py-2 text-center text-sm font-bold text-white sm:text-base">
+					<p class="text-wrap py-2 text-center text-xs font-bold text-white sm:text-sm">
 						New Link
 					</p></Popover.Trigger
 				>
