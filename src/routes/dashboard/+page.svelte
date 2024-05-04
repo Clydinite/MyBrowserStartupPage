@@ -13,6 +13,8 @@
 	import { authHandlers, authStore } from '$lib/stores/auth_store';
 	import { doc, getDoc, setDoc } from 'firebase/firestore';
 
+	// TODO: fix the mobile bug of not being able to drag and drop
+
 	let newTitle = '';
 	let newHref = '';
 
@@ -113,31 +115,30 @@
 					}
 				}}
 			>
-				<ContextMenu.Trigger>
-					<!-- website icon -->
-					<div>
-						<div class="flex-initial">
-							<a {href} target="_blank" class="flex flex-col" draggable="false">
-								<img
-									src="https://www.google.com/s2/favicons?sz=64&domain_url={href}"
-									alt="{title} logo"
-									class="mx-auto h-10 w-10 rounded-md object-cover sm:h-12 sm:w-12 md:h-16 md:w-16"
-									draggable="true"
-									on:dragstart={(event) => handleDragStart(event, index)}
-									on:dragover|preventDefault
-									on:drop|preventDefault={(event) => handleDrop(event, index)}
-									on:touchstart={(event) => handleDragStart(event, index)}
-									on:touchmove|preventDefault
-								/></a
-							>
-						</div>
+				<!-- website icon -->
+				<div>
+					<div class="flex-initial">
+						<a {href} target="_blank" class="flex flex-col" draggable="false">
+							<img
+								src="https://www.google.com/s2/favicons?sz=64&domain_url={href}"
+								alt="{title} logo"
+								class="mx-auto h-10 w-10 rounded-md object-cover sm:h-12 sm:w-12 md:h-16 md:w-16"
+								draggable="true"
+								on:dragstart={(event) => handleDragStart(event, index)}
+								on:dragover|preventDefault
+								on:drop|preventDefault={(event) => handleDrop(event, index)}
+							/></a
+						>
+					</div>
+
+					<ContextMenu.Trigger>
 						<p
 							class="select-none text-wrap py-2 text-center text-xs font-bold text-white sm:text-sm"
 						>
 							{title}
 						</p>
-					</div>
-				</ContextMenu.Trigger>
+					</ContextMenu.Trigger>
+				</div>
 				<ContextMenu.Content class="border-0 bg-slate-500/25 p-4 backdrop-blur-md">
 					<div>
 						<p class="text-white">New Title</p>
