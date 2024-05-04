@@ -2,8 +2,6 @@
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
 
-	import Icon from '../Icon.svelte';
-
 	import * as Popover from '$lib/components/ui/popover';
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import { Button } from '$lib/components/ui/button';
@@ -17,8 +15,6 @@
 
 	let newTitle = '';
 	let newHref = '';
-
-	// TODO: add a way to reorder the links by dragging
 
 	function createIcon() {
 		if (newTitle && newHref) {
@@ -43,6 +39,31 @@
 
 		// clear the data first. otherwise, when the context menu is closed (when clicking the delete button), updateIcon will also be called, adding the already-deleted data back into the array
 		$authStore.links = $authStore.links.filter((_, i) => i !== index);
+	}
+
+	function handleDragStart(event: DragEvent, dragIndex: number) {
+		if (!event.dataTransfer) return;
+
+		event.dataTransfer.setData('text/plain', dragIndex.toString());
+		event.dataTransfer.dropEffect = 'move';
+	}
+
+	function handleDrop(event: DragEvent, dropIndex: number) {
+		if (!event.dataTransfer) return;
+
+		const dragIndex = parseInt(event.dataTransfer?.getData('text/plain'));
+
+		// Make a copy of the links array
+		const linksCopy = [...$authStore.links];
+
+		// Remove the dragged item from its original position
+		const draggedItem = linksCopy.splice(dragIndex, 1)[0];
+
+		// Insert the dragged item at the drop position
+		linksCopy.splice(dropIndex, 0, draggedItem);
+
+		// Update the links array with the new order
+		$authStore.links = linksCopy;
 	}
 
 	async function saveLinks() {
@@ -79,7 +100,7 @@
 	</div>
 
 	<div
-		class="grid flex-grow grid-cols-4 auto-rows-min gap-3 rounded-lg transition-transform md:grid-cols-6"
+		class="grid flex-grow auto-rows-min grid-cols-4 gap-3 rounded-lg transition-transform md:grid-cols-6"
 	>
 		{#each $authStore.links as { title, href }, index}
 			<ContextMenu.Root
@@ -93,7 +114,29 @@
 				}}
 			>
 				<ContextMenu.Trigger>
-					<Icon {title} {href}></Icon>
+					<!-- website icon -->
+					<div>
+						<div class="flex-initial">
+							<a {href} target="_blank" class="flex flex-col" draggable="false">
+								<img
+									src="https://www.google.com/s2/favicons?sz=64&domain_url={href}"
+									alt="{title} logo"
+									class="mx-auto h-10 w-10 rounded-md object-cover sm:h-12 sm:w-12 md:h-16 md:w-16"
+									draggable="true"
+									on:dragstart={(event) => handleDragStart(event, index)}
+									on:dragover|preventDefault
+									on:drop|preventDefault={(event) => handleDrop(event, index)}
+									on:touchstart={(event) => handleDragStart(event, index)}
+									on:touchmove|preventDefault
+								/></a
+							>
+						</div>
+						<p
+							class="select-none text-wrap py-2 text-center text-xs font-bold text-white sm:text-sm"
+						>
+							{title}
+						</p>
+					</div>
 				</ContextMenu.Trigger>
 				<ContextMenu.Content class="border-0 bg-slate-500/25 p-4 backdrop-blur-md">
 					<div>
@@ -132,6 +175,7 @@
 		{/each}
 
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
+		<!-- add icon -->
 		<div class="flex items-start justify-center">
 			<Popover.Root onOutsideClick={createIcon}>
 				<Popover.Trigger>
