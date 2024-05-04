@@ -63,7 +63,7 @@
 
 	<div class="flex gap-2">
 		{#if register}
-			<p>Don't have an account?</p>
+			<p>Already have an account?</p>
 			<button
 				on:click={() => {
 					register = !register;
@@ -71,7 +71,7 @@
 				class="font-bold text-blue-500">Login</button
 			>
 		{:else}
-			<p>Already have an account?</p>
+			<p>Don't have an account?</p>
 			<button
 				on:click={() => {
 					register = !register;
