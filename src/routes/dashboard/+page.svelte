@@ -44,6 +44,7 @@
 	}
 
 	function handleDragStart(event: DragEvent, dragIndex: number) {
+		console.log('drop', event, dragIndex);
 		if (!event.dataTransfer) return;
 
 		event.dataTransfer.setData('text/plain', dragIndex.toString());
@@ -51,20 +52,13 @@
 	}
 
 	function handleDrop(event: DragEvent, dropIndex: number) {
+		console.log('drop', event, dropIndex);
 		if (!event.dataTransfer) return;
 
 		const dragIndex = parseInt(event.dataTransfer?.getData('text/plain'));
-
-		// Make a copy of the links array
 		const linksCopy = [...$authStore.links];
-
-		// Remove the dragged item from its original position
-		const draggedItem = linksCopy.splice(dragIndex, 1)[0];
-
-		// Insert the dragged item at the drop position
-		linksCopy.splice(dropIndex, 0, draggedItem);
-
-		// Update the links array with the new order
+		const draggedItem = linksCopy.splice(dragIndex, 1)[0]; // remove the dragged item
+		linksCopy.splice(dropIndex, 0, draggedItem); // insert back
 		$authStore.links = linksCopy;
 	}
 
@@ -118,7 +112,13 @@
 				<!-- website icon -->
 				<div>
 					<div class="flex-initial">
-						<a {href} target="_blank" class="flex flex-col" draggable="false">
+						<a
+							{href}
+							target="_self"
+							class="flex flex-col"
+							draggable="false"
+							on:contextmenu|preventDefault={() => false}
+						>
 							<img
 								src="https://www.google.com/s2/favicons?sz=64&domain_url={href}"
 								alt="{title} logo"
@@ -130,7 +130,6 @@
 							/></a
 						>
 					</div>
-
 					<ContextMenu.Trigger>
 						<p
 							class="select-none text-wrap py-2 text-center text-xs font-bold text-white sm:text-sm"
@@ -148,7 +147,6 @@
 							class="m-2 mx-auto h-10 w-full rounded-md bg-stone-300/20 p-2 text-white"
 						/>
 					</div>
-
 					<div>
 						<p class="text-white">New URL</p>
 						<input
@@ -157,7 +155,6 @@
 							class="m-2 mx-auto h-10 w-full rounded-md bg-stone-300/20 p-2 text-white"
 						/>
 					</div>
-
 					<ContextMenu.Item
 						class="rounded-button mt-2 select-none items-center rounded-md bg-slate-50/20"
 						on:click={() => deleteIcon(index)}
