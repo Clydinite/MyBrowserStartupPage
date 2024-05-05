@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import { onMount } from 'svelte';
 
 	import * as Popover from '$lib/components/ui/popover';
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import { Button } from '$lib/components/ui/button';
+	import Sortable from 'sortablejs';
 
 	import DeleteIcon from '$lib/svg-icons/DeleteIcon.svelte';
 	import AddIcon from '$lib/svg-icons/AddIcon.svelte';
@@ -12,8 +12,30 @@
 	import { db } from '$lib/firebase';
 	import { authHandlers, authStore } from '$lib/stores/auth_store';
 	import { doc, getDoc, setDoc } from 'firebase/firestore';
+	import { onMount } from 'svelte';
 
 	// TODO: fix the mobile bug of not being able to drag and drop
+
+	let sortable: HTMLElement;
+	
+	onMount(async () => {
+		Sortable.create(sortable, {
+			dragClass: 'hidden',
+			draggable: '.drag',
+			onEnd: (event) => {
+				console.log(event.oldIndex, event.newIndex);
+				const dragIndex = event.oldIndex
+				const dropIndex = event.newIndex
+
+				if (dragIndex === undefined || dropIndex === undefined) return
+
+				const linksCopy = [...$authStore.links];
+				const draggedItem = linksCopy.splice(dragIndex, 1)[0]; // remove the dragged item
+				linksCopy.splice(dropIndex, 0, draggedItem); // insert back
+				$authStore.links = linksCopy;
+			}
+		});
+	});
 
 	let newTitle = '';
 	let newHref = '';
@@ -43,24 +65,6 @@
 		$authStore.links = $authStore.links.filter((_, i) => i !== index);
 	}
 
-	function handleDragStart(event: DragEvent, dragIndex: number) {
-		console.log('drop', event, dragIndex);
-		if (!event.dataTransfer) return;
-
-		event.dataTransfer.setData('text/plain', dragIndex.toString());
-		event.dataTransfer.dropEffect = 'move';
-	}
-
-	function handleDrop(event: DragEvent, dropIndex: number) {
-		console.log('drop', event, dropIndex);
-		if (!event.dataTransfer) return;
-
-		const dragIndex = parseInt(event.dataTransfer?.getData('text/plain'));
-		const linksCopy = [...$authStore.links];
-		const draggedItem = linksCopy.splice(dragIndex, 1)[0]; // remove the dragged item
-		linksCopy.splice(dropIndex, 0, draggedItem); // insert back
-		$authStore.links = linksCopy;
-	}
 
 	async function saveLinks() {
 		try {
@@ -74,6 +78,7 @@
 	}
 
 	authStore.subscribe((current) => {
+
 		console.log(current);
 
 		if (current.user) {
@@ -97,8 +102,9 @@
 
 	<div
 		class="grid flex-grow auto-rows-min grid-cols-4 gap-3 rounded-lg transition-transform md:grid-cols-6"
+		bind:this={sortable}
 	>
-		{#each $authStore.links as { title, href }, index}
+		{#each $authStore.links as { title, href }, index (title + href)}
 			<ContextMenu.Root
 				onOpenChange={(open) => {
 					if (open) {
@@ -110,7 +116,7 @@
 				}}
 			>
 				<!-- website icon -->
-				<div>
+				<div class="drag">
 					<div class="flex-initial">
 						<a
 							{href}
@@ -123,10 +129,6 @@
 								src="https://www.google.com/s2/favicons?sz=64&domain_url={href}"
 								alt="{title} logo"
 								class="mx-auto h-10 w-10 rounded-md object-cover sm:h-12 sm:w-12 md:h-16 md:w-16"
-								draggable="true"
-								on:dragstart={(event) => handleDragStart(event, index)}
-								on:dragover|preventDefault
-								on:drop|preventDefault={(event) => handleDrop(event, index)}
 							/></a
 						>
 					</div>
