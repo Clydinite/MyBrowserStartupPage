@@ -20,7 +20,9 @@
 
 	onMount(async () => {
 		Sortable.create(sortable, {
-			// dragClass: 'hidden',
+			animation: 150,
+			dragClass: 'hidden',
+			ghostClass: 'opacity-30',
 			draggable: '.drag',
 			onEnd: (event) => {
 				console.log(event.oldIndex, event.newIndex);
