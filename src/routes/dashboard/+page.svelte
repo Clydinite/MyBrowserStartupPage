@@ -17,22 +17,24 @@
 	// TODO: fix the mobile bug of not being able to drag and drop
 
 	let sortable: HTMLElement;
-	
+
 	onMount(async () => {
 		Sortable.create(sortable, {
-			dragClass: 'hidden',
+			// dragClass: 'hidden',
 			draggable: '.drag',
 			onEnd: (event) => {
 				console.log(event.oldIndex, event.newIndex);
-				const dragIndex = event.oldIndex
-				const dropIndex = event.newIndex
+				const dragIndex = event.oldIndex;
+				const dropIndex = event.newIndex;
 
-				if (dragIndex === undefined || dropIndex === undefined) return
+				if (dragIndex === undefined || dropIndex === undefined) return;
 
 				const linksCopy = [...$authStore.links];
 				const draggedItem = linksCopy.splice(dragIndex, 1)[0]; // remove the dragged item
 				linksCopy.splice(dropIndex, 0, draggedItem); // insert back
 				$authStore.links = linksCopy;
+
+				saveLinks();
 			}
 		});
 	});
@@ -47,6 +49,8 @@
 			newTitle = '';
 			newHref = '';
 		}
+
+		saveLinks();
 	}
 
 	function updateIcon(index: number) {
@@ -55,6 +59,8 @@
 		}
 		newTitle = '';
 		newHref = '';
+
+		saveLinks();
 	}
 
 	function deleteIcon(index: number) {
@@ -63,12 +69,18 @@
 
 		// clear the data first. otherwise, when the context menu is closed (when clicking the delete button), updateIcon will also be called, adding the already-deleted data back into the array
 		$authStore.links = $authStore.links.filter((_, i) => i !== index);
+
+		saveLinks();
 	}
 
-
 	async function saveLinks() {
+
+		console.log('saving', $authStore.links);
+		
 		try {
 			if (!$authStore.user) return;
+
+			if (browser) localStorage.setItem('links', JSON.stringify($authStore.links));
 
 			const userRef = doc(db, 'users', $authStore.user.uid);
 			await setDoc(userRef, { links: $authStore.links }, { merge: true });
@@ -76,18 +88,6 @@
 			console.error("there's an error saving", err);
 		}
 	}
-
-	authStore.subscribe((current) => {
-
-		console.log(current);
-
-		if (current.user) {
-			saveLinks();
-			if (browser) {
-				localStorage.setItem('links', JSON.stringify($authStore.links));
-			}
-		}
-	});
 </script>
 
 <div class="md:p-15 flex h-full w-full flex-col p-5 sm:p-8">
