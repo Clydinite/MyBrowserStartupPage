@@ -24,6 +24,9 @@
 			ghostClass: 'opacity-0',
 			draggable: '.drag',
 
+			filter: 'a',
+			preventOnFilter: false,
+
 			onEnd: (event) => {
 				console.log(event.oldIndex, event.newIndex);
 				const dragIndex = event.oldIndex;
@@ -125,7 +128,6 @@
 							class="flex flex-col"
 							draggable="false"
 							on:contextmenu|preventDefault={() => false}
-							on:click={() => window.open(href, '_self')}
 						>
 							<img
 								src="https://www.google.com/s2/favicons?sz=64&domain_url={href}"
