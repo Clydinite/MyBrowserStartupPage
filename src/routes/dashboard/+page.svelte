@@ -14,16 +14,16 @@
 	import { doc, getDoc, setDoc } from 'firebase/firestore';
 	import { onMount } from 'svelte';
 
-	// TODO: fix the mobile bug of not being able to drag and drop
+	// TODO: add an introduction
 
 	let sortable: HTMLElement;
 
 	onMount(async () => {
 		Sortable.create(sortable, {
 			animation: 150,
-			dragClass: 'hidden',
-			ghostClass: 'opacity-30',
+			ghostClass: 'opacity-0',
 			draggable: '.drag',
+
 			onEnd: (event) => {
 				console.log(event.oldIndex, event.newIndex);
 				const dragIndex = event.oldIndex;
@@ -76,9 +76,8 @@
 	}
 
 	async function saveLinks() {
-
 		console.log('saving', $authStore.links);
-		
+
 		try {
 			if (!$authStore.user) return;
 
@@ -103,7 +102,7 @@
 	</div>
 
 	<div
-		class="grid flex-grow auto-rows-min grid-cols-4 gap-3 rounded-lg transition-transform md:grid-cols-6"
+		class="grid flex-grow auto-rows-min grid-cols-4 gap-3 rounded-lg md:grid-cols-6"
 		bind:this={sortable}
 	>
 		{#each $authStore.links as { title, href }, index (title + href)}
@@ -126,6 +125,7 @@
 							class="flex flex-col"
 							draggable="false"
 							on:contextmenu|preventDefault={() => false}
+							on:click={() => window.open(href, '_self')}
 						>
 							<img
 								src="https://www.google.com/s2/favicons?sz=64&domain_url={href}"
@@ -152,7 +152,7 @@
 						/>
 					</div>
 					<div>
-						<p class="text-white">New URL</p>
+						<p>New URL</p>
 						<input
 							type="text"
 							bind:value={newHref}
@@ -160,29 +160,25 @@
 						/>
 					</div>
 					<ContextMenu.Item
-						class="rounded-button mt-2 select-none items-center rounded-md bg-slate-50/20"
+						class="rounded-button mt-2 h-10 select-none items-center rounded-md bg-slate-50/20 transition-colors"
 						on:click={() => deleteIcon(index)}
 					>
-						<div>
-							<div class="flex items-center">
-								<div class="mx-auto h-14 w-14">
-									<DeleteIcon />
-								</div>
-								<p class="text-white">Delete</p>
+						<div class="flex items-center">
+							<div class="mx-auto h-10 w-10">
+								<DeleteIcon />
 							</div>
+							<p>Delete</p>
 						</div>
 					</ContextMenu.Item>
 				</ContextMenu.Content>
 			</ContextMenu.Root>
 		{/each}
 
-		<!-- svelte-ignore a11y-no-static-element-interactions -->
 		<!-- add icon -->
+		<!-- svelte-ignore a11y-no-static-element-interactions -->
 		<div class="flex items-start justify-center">
 			<Popover.Root onOutsideClick={createIcon}>
 				<Popover.Trigger>
-					<!-- svelte-ignore a11y-click-events-have-key-events -->
-					<!-- svelte-ignore a11y-no-static-element-interactions -->
 					<div class="mx-auto h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16">
 						<AddIcon />
 					</div>
