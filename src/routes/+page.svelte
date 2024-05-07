@@ -8,7 +8,6 @@
 	import { authHandlers } from '$lib/stores/auth_store';
 
 	$: {
-		console.log(data);
 		if (form?.success) handleAuthenticate();
 	}
 
@@ -38,7 +37,7 @@
 	}
 </script>
 
-<div class="container flex h-full max-w-md flex-col items-center justify-center">
+<div class="container flex min-h-screen overflow-y-auto max-w-md flex-col items-center justify-center py-5">
 	<!-- <SuperDebug data={$formData}></SuperDebug> -->
 
 	<h1 class="mb-5 text-5xl font-bold">{register ? 'Register' : 'Login'}</h1>

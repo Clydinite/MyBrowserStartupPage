@@ -21,11 +21,12 @@
 	onMount(async () => {
 		Sortable.create(sortable, {
 			animation: 150,
+
 			ghostClass: 'opacity-0',
 			draggable: '.drag',
 
-			filter: 'a',
-			preventOnFilter: false,
+			delay: 100,
+			delayOnTouchOnly: true,
 
 			onEnd: (event) => {
 				console.log(event.oldIndex, event.newIndex);
@@ -95,11 +96,12 @@
 </script>
 
 <div class="md:p-15 flex h-full w-full flex-col p-5 sm:p-8">
-	<div class="mb-5 flex w-full items-center justify-between">
-		<a href="https://github.com/Clydinite/MyBrowserStartupPage" class="font-bold"
-			>MyBrowserStartupPage</a
-		>
-		<Button class="bg-slate-500/25 font-bold text-white" on:click={authHandlers.logout}
+	<div class="mb-5 flex w-full items-center justify-between px-2">
+		<a href="https://github.com/Clydinite/MyBrowserStartupPage" class="flex items-center">
+			<img src="browser-startup-page-logo.svg" alt="Logo" class="h-6 w-6" />
+			<p class="ml-2 font-bold text-base md:text-lg">MyBrowserStartupPage</p>
+		</a>
+		<Button class="h-8 bg-slate-500/25 font-bold text-white" on:click={authHandlers.logout}
 			>Logout</Button
 		>
 	</div>
