@@ -74,6 +74,8 @@
 			});
 
 			console.log('fetched data', $authStore);
+			localStorage.setItem('links', JSON.stringify($authStore.links));
+
 		});
 
 		return unsubscribe;
