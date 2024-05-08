@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { fade } from 'svelte/transition';
+	
 	import RegisterForm from './RegisterForm.svelte';
 	import LoginForm from './LoginForm.svelte';
 
@@ -43,7 +45,7 @@
 	<h1 class="mb-5 text-5xl font-bold">{register ? 'Register' : 'Login'}</h1>
 
 	{#if error}
-		<p class="text-sm font-medium text-destructive">
+		<p class="text-sm font-medium text-destructive" transition:fade>
 			There's something wrong with email or password.
 		</p>
 	{/if}

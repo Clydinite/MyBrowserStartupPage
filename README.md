@@ -1,14 +1,31 @@
 # my-browser-startup-page
 
-This is a browser startup page that you can save links to. It's as simple as it gets: no clutter, no bells and whistles, just links. The built-in ones are great, but often they come with a lot of extra features that can be distracting. Imagine waking up to a page full of news articles or ads. Not cool. This startup page is just a simple list of links that you can customize to your heart's content. It's like having a personalized links bar that opens up every time you start your browser.
+![screenshot](./screenshot.png)
 
+Hey there, fellow human! Ever wished your browser's startup page could just get straight to the point? Say no more – we've got you covered.
 
-Here's the tech stack:
+The minimalist startup page is all about keeping things simple. No more waking up to a chaotic mess of news articles and ads. Instead, picture this: a clean slate, ready for your favorite links and nothing else. It's like your own little corner of the internet, just the way you like it.
 
+Also, you can submit a pull request if you have any improvements or new features in mind!
+
+## How to use it?
+
+It's just like your phone's app page. Drag the icons to reorder, long press or right click on the **text** to edit the link. And that's it.
+
+## Why do I need to set up an account?
+
+That's for synchronization! Yeah, you can totally use the same startup page on your computer and your phone, and it'll all be in sync.
+
+## Tech stack
+
+- Svelte
 - SvelteKit
-- TailwindCSS (Shadcn-svelte)
-- Firebase (Auth, Firestore)
-
-Feel free to modify the code to customize it.
-
-
+- TailwindCSS
+  - Shadcn-svelte
+- Firebase
+  - Auth
+  - Firestore
+- Zod
+- SortableJS
+- Vercel
+- Iconify
