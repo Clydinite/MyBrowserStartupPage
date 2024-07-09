@@ -1,84 +1,32 @@
-<script lang="ts">
-	import { fade } from 'svelte/transition';
-	
-	import RegisterForm from './RegisterForm.svelte';
-	import LoginForm from './LoginForm.svelte';
-
-	export let data;
-	export let form; // form will be what ever is returned from the server (login or register)
-
-	import { authHandlers } from '$lib/stores/auth_store';
-
-	$: {
-		if (form?.success) handleAuthenticate();
-	}
-
-	let register = false;
-	let error = false;
-	let authenticating = false;
-
-	async function handleAuthenticate() {
-		if (!form) return;
-		authenticating = true;
-
-		const email = form.form.data.email;
-		const password = form.form.data.password;
-
-		try {
-			if (register) {
-				await authHandlers.signup(email, password);
-			} else {
-				await authHandlers.login(email, password);
-			}
-		} catch (err) {
-			console.error(err);
-			error = true;
-		} finally {
-			authenticating = false;
-		}
-	}
+<script>
+	import Button from '$lib/components/ui/button/button.svelte';
+	import RightArrow from '@/svg-icons/RightArrow.svelte';
 </script>
 
-<div class="container flex min-h-screen overflow-y-auto max-w-md flex-col items-center justify-center py-5">
-	<!-- <SuperDebug data={$formData}></SuperDebug> -->
+<div class="container flex min-h-screen max-w-xl flex-col justify-center gap-4 py-5">
+	<img src="browser-startup-page-logo.svg" alt="Logo" class="mx-auto h-48 w-48" />
 
-	<h1 class="mb-5 text-5xl font-bold">{register ? 'Register' : 'Login'}</h1>
+	<h1 class="scroll-m-20 py-5 text-center text-3xl font-bold tracking-tight md:text-5xl">
+		MyBrowserStartupPage
+	</h1>
 
-	{#if error}
-		<p class="text-sm font-medium text-destructive" transition:fade>
-			There's something wrong with email or password.
-		</p>
-	{/if}
+	<a href="/login">
+		<Button class="bg-white/75 font-bold w-full flex gap-3 rounded-lg"> <RightArrow /> Get Started</Button>
+	</a>
 
-	{#if register}
-		<RegisterForm data={data.registerForm} {authenticating} />
-	{:else}
-		<LoginForm data={data.loginForm} {authenticating} />
-	{/if}
+	<p class="rounded-lg bg-white/20 p-4">
+		Hey there, fellow human! Ever wished your browser's startup page could just get straight to the
+		point? Say no more – we've got you covered.
+	</p>
 
-	<div class="mb-4 inline-flex w-full items-center justify-center gap-2">
-		<div class="h-px flex-grow bg-slate-200"></div>
-		<p class="text-white">or</p>
-		<div class="h-px flex-grow bg-slate-200"></div>
-	</div>
+	<p class="rounded-lg bg-white/20 p-4">
+		The minimalist startup page is all about keeping things simple. No more waking up to a chaotic
+		mess of news articles and ads. Instead, picture this: a clean slate, ready for your favorite
+		links and nothing else. It's like your own little corner of the internet, just the way you like
+		it.
+	</p>
 
-	<div class="flex gap-2">
-		{#if register}
-			<p>Already have an account?</p>
-			<button
-				on:click={() => {
-					register = !register;
-				}}
-				class="font-bold text-blue-500">Login</button
-			>
-		{:else}
-			<p>Don't have an account?</p>
-			<button
-				on:click={() => {
-					register = !register;
-				}}
-				class="font-bold text-blue-500">Register</button
-			>
-		{/if}
-	</div>
+	<p class="rounded-lg bg-white/20 p-4">
+		Also, you can submit a pull request if you have any improvements or new features in mind!
+	</p>
 </div>

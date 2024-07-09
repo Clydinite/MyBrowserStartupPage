@@ -6,7 +6,7 @@
 	import { doc, getDoc, setDoc } from 'firebase/firestore';
 	import { authStore } from '@/stores/auth_store';
 
-	const publicRoutes = ['/'];
+	const publicRoutes = ['/', '/login'];
 
 	onMount(() => {
 		console.log('mounted');
@@ -20,13 +20,13 @@
 			const path = window.location.pathname;
 
 			if (!user && !publicRoutes.includes(path)) {
-				window.location.href = '/';
+				window.location.href = '/login';
 				return;
 			}
 
 			if (!user) return;
 
-			if (user && path === '/') {
+			if (user && path === '/login') {
 				window.location.href = '/dashboard';
 				return;
 			}

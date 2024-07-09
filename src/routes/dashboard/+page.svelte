@@ -14,7 +14,7 @@
 	import { doc, getDoc, setDoc } from 'firebase/firestore';
 	import { onMount } from 'svelte';
 
-	// TODO: add an introduction
+	// TODO: add white background if the image is transparent
 
 	let sortable: HTMLElement;
 
@@ -50,6 +50,13 @@
 
 	function createIcon() {
 		if (newTitle && newHref) {
+			// if the href doesn't start with http or https, add https:// to the front
+			// otherwise it'll be treated as a relative link and be linked to somewhere in the app
+
+			if (newHref.startsWith('http://') || newHref.startsWith('https://')) {
+				newHref = 'https://' + newHref;
+			}
+
 			$authStore.links = [...$authStore.links, { title: newTitle, href: newHref }];
 
 			newTitle = '';
@@ -93,21 +100,78 @@
 			console.error("there's an error saving", err);
 		}
 	}
+
+	// function checkTransparency(image: HTMLImageElement) {
+	// 	const canvas = document.createElement('canvas');
+	// 	const ctx = canvas.getContext('2d')!;
+
+	// 	canvas.width = image.naturalWidth;
+	// 	canvas.height = image.naturalHeight;
+	// 	ctx.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight);
+
+	// 	const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	// 	const pixels = imageData.data;
+	// 	let borderTransparent = false;
+
+	// 	const width = canvas.width;
+	// 	const height = canvas.height;
+	// 	const borderPixelsToCheck = 16;
+
+	// 	// Check top and bottom edges
+	// 	for (let x = 0; x < width; x += Math.ceil(width / borderPixelsToCheck)) {
+	// 		if (
+	// 			isPixelTransparent(pixels, x, 0, width) ||
+	// 			isPixelTransparent(pixels, x, height - 1, width)
+	// 		) {
+	// 			borderTransparent = true;
+	// 			break;
+	// 		}
+	// 	}
+
+	// 	// Check left and right edges
+	// 	for (let y = 0; y < height; y += Math.ceil(height / borderPixelsToCheck)) {
+	// 		if (
+	// 			isPixelTransparent(pixels, 0, y, width) ||
+	// 			isPixelTransparent(pixels, width - 1, y, width)
+	// 		) {
+	// 			borderTransparent = true;
+	// 			break;
+	// 		}
+	// 	}
+
+	// 	const container = image.parentElement!;
+	// 	if (borderTransparent) {
+	// 		container.classList.add('bg-white');
+	// 		container.classList.remove('bg-transparent');
+	// 	} else {
+	// 		container.classList.add('bg-transparent');
+	// 		container.classList.remove('bg-white');
+	// 		image.classList.add('static-fit');
+	// 	}
+	// 	console.log(borderTransparent);
+	// }
+
+	// function isPixelTransparent(pixels: Uint8ClampedArray, x: number, y: number, width: number) {
+	// 	const index = (y * width + x) * 4;
+	// 	return pixels[index + 3] < 255; // Check the alpha channel
+	// }
 </script>
 
-<div class="md:p-15 flex h-full w-full flex-col p-5 sm:p-8">
-	<div class="mb-5 flex w-full items-center justify-between px-2">
+<div class="flex h-full w-full flex-col p-4 sm:p-8">
+	<div
+		class="mb-4 flex w-full items-center justify-between rounded-lg bg-white/10 p-2 px-2 sm:mb-8"
+	>
 		<a href="https://github.com/Clydinite/MyBrowserStartupPage" class="flex items-center">
-			<img src="browser-startup-page-logo.svg" alt="Logo" class="h-6 w-6" />
-			<p class="ml-2 font-bold text-base md:text-lg">MyBrowserStartupPage</p>
+			<img src="browser-startup-page-logo.svg" alt="Logo" class="h-8 w-8" />
+			<p class="ml-2 text-base font-bold md:text-lg">MyBrowserStartupPage</p>
 		</a>
-		<Button class="h-8 bg-slate-500/25 font-bold text-white" on:click={authHandlers.logout}
+		<Button class="h-8 bg-slate-900 font-bold text-white" on:click={authHandlers.logout}
 			>Logout</Button
 		>
 	</div>
 
 	<div
-		class="grid flex-grow auto-rows-min grid-cols-4 gap-3 rounded-lg md:grid-cols-6"
+		class="grid flex-grow auto-rows-min grid-cols-4 gap-2 rounded-lg bg-white/10 px-2 pt-4 md:grid-cols-6"
 		bind:this={sortable}
 	>
 		{#each $authStore.links as { title, href }, index (title + href)}
@@ -131,16 +195,21 @@
 							draggable="false"
 							on:contextmenu|preventDefault={() => false}
 						>
-							<img
-								src="https://www.google.com/s2/favicons?sz=64&domain_url={href}"
-								alt="{title} logo"
-								class="mx-auto h-10 w-10 rounded-md object-cover sm:h-12 sm:w-12 md:h-16 md:w-16"
-							/></a
+							<!-- TODO: add bg-white/20 in this div -->
+							<div
+								class="mx-auto h-10 w-10 rounded-lg object-cover sm:h-12 sm:w-12 md:h-16 md:w-16"
+							>
+								<img
+									src="https://www.google.com/s2/favicons?sz=64&domain_url={href}"
+									alt="{title} logo"
+									class="mx-auto h-10 w-10 rounded-lg object-cover sm:h-12 sm:w-12 md:h-16 md:w-16"
+								/>
+							</div></a
 						>
 					</div>
 					<ContextMenu.Trigger>
 						<p
-							class="select-none text-wrap py-2 text-center text-xs font-bold text-white sm:text-sm"
+							class="h-10 sm:h-12 truncate select-none text-wrap pt-2 text-center text-xs font-bold text-white sm:text-sm"
 						>
 							{title}
 						</p>
@@ -152,7 +221,7 @@
 						<input
 							type="text"
 							bind:value={newTitle}
-							class="m-2 mx-auto h-10 w-full rounded-md bg-stone-300/20 p-2 text-white"
+							class="m-2 mx-auto h-10 w-full bg-stone-300/20 p-2 text-white"
 						/>
 					</div>
 					<div>
