@@ -56,7 +56,7 @@
 				// if the user does exist in firestore
 			} else {
 				console.log('fetching user');
-
+				
 				// get the data from firestore
 				const userData = docSnap.data();
 

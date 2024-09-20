@@ -53,7 +53,7 @@
 			// if the href doesn't start with http or https, add https:// to the front
 			// otherwise it'll be treated as a relative link and be linked to somewhere in the app
 
-			if (newHref.startsWith('http://') || newHref.startsWith('https://')) {
+			if (!newHref.startsWith('http://') && !newHref.startsWith('https://')) {
 				newHref = 'https://' + newHref;
 			}
 
@@ -202,14 +202,14 @@
 								<img
 									src="https://www.google.com/s2/favicons?sz=64&domain_url={href}"
 									alt="{title} logo"
-									class="mx-auto h-10 w-10 rounded-lg object-cover sm:h-12 sm:w-12 md:h-16 md:w-16"
+									class="mx-auto h-10 w-10 rounded-lg object-cover sm:h-12 sm:w-12 md:h-16 md:w-16 md:rounded-xl"
 								/>
 							</div></a
 						>
 					</div>
 					<ContextMenu.Trigger>
 						<p
-							class="h-10 sm:h-12 truncate select-none text-wrap pt-2 text-center text-xs font-bold text-white sm:text-sm"
+							class="h-10 select-none truncate text-wrap pt-2 text-center text-xs font-bold text-white sm:h-12 sm:text-sm"
 						>
 							{title}
 						</p>
