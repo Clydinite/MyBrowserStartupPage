@@ -56,7 +56,7 @@
 				// if the user does exist in firestore
 			} else {
 				console.log('fetching user');
-				
+
 				// get the data from firestore
 				const userData = docSnap.data();
 
@@ -75,11 +75,59 @@
 
 			console.log('fetched data', $authStore);
 			localStorage.setItem('links', JSON.stringify($authStore.links));
-
 		});
 
 		return unsubscribe;
 	});
 </script>
 
-<slot />
+<div class="h-full w-full bg-cover bg-fixed bg-no-repeat">
+	<div class="particle -z-10"></div>
+	<slot />
+</div>
+
+<style>
+	.particle {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: #191b1f;
+		overflow: clip;
+	}
+
+	.particle::after,
+	.particle::before {
+		content: '';
+		display: inline-block;
+		position: absolute;
+		background: hsl(199, 56%, 18%);
+		width: 300px;
+		height: 300px;
+		border-radius: 50%;
+		filter: blur(70px);
+		mix-blend-mode: lighten;
+	}
+
+	.particle::before {
+		top: 0;
+		right: 0;
+		transform: translate(50%, -50%);
+	}
+	.particle::after {
+		top: 50%;
+		left: 0px;
+		transform: translateX(-50%);
+	}
+	/*With gradient background*/
+	.particle {
+		background: radial-gradient(
+				circle closest-corner at center 125px,
+				hsl(199, 56%, 18%),
+				#0f172a 70%
+			)
+			no-repeat;
+	}
+</style>
+
