@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import { invalidate, invalidateAll } from '$app/navigation';
 
 	import * as Popover from '$lib/components/ui/popover';
 	import * as ContextMenu from '$lib/components/ui/context-menu';
@@ -9,12 +10,40 @@
 
 	import DeleteIcon from '$lib/svg-icons/DeleteIcon.svelte';
 	import AddIcon from '$lib/svg-icons/AddIcon.svelte';
-	import SettingsIcon from '$lib/svg-icons/SettingsIcon.svelte';
 
 	import { db } from '$lib/firebase';
 	import { authHandlers, authStore } from '$lib/stores/auth_store';
 	import { doc, getDoc, setDoc } from 'firebase/firestore';
 	import { onMount } from 'svelte';
+
+	import SettingsForm from './SettingsForm.svelte';
+
+	export let data;
+	export let form; // it will contain the settings data
+
+	$: {
+		if (form?.success) handleSettings();
+	}
+
+	//TODO: test
+	authStore.subscribe((current) => {
+		debugger;
+		console.log('auth store update', current);
+	})
+
+	async function handleSettings() {
+		if (!form) return;
+		
+		debugger;
+
+		console.log('settings', form.form.data);
+		$authStore.settings = form.form.data;
+
+		console.log(localStorage)
+		invalidateAll(); // the load function in +page.server.ts will be re-run, updating the pre-populated form data
+
+		save();
+	}
 
 	// TODO: add white background if the image is transparent
 
@@ -42,7 +71,7 @@
 				linksCopy.splice(dropIndex, 0, draggedItem); // insert back
 				$authStore.links = linksCopy;
 
-				saveLinks();
+				save();
 			}
 		});
 	});
@@ -65,7 +94,7 @@
 			newHref = '';
 		}
 
-		saveLinks();
+		save();
 	}
 
 	function updateIcon(index: number) {
@@ -75,7 +104,7 @@
 		newTitle = '';
 		newHref = '';
 
-		saveLinks();
+		save();
 	}
 
 	function deleteIcon(index: number) {
@@ -85,19 +114,22 @@
 		// clear the data first. otherwise, when the context menu is closed (when clicking the delete button), updateIcon will also be called, adding the already-deleted data back into the array
 		$authStore.links = $authStore.links.filter((_, i) => i !== index);
 
-		saveLinks();
+		save();
 	}
 
-	async function saveLinks() {
-		console.log('saving', $authStore.links);
+	async function save() {
+		console.log('saving', $authStore.links, $authStore.settings);
 
 		try {
 			if (!$authStore.user) return;
 
-			if (browser) localStorage.setItem('links', JSON.stringify($authStore.links));
+			if (browser) {
+				localStorage.setItem('links', JSON.stringify($authStore.links));
+				localStorage.setItem('settings', JSON.stringify($authStore.settings));
+			}
 
 			const userRef = doc(db, 'users', $authStore.user.uid);
-			await setDoc(userRef, { links: $authStore.links }, { merge: true });
+			await setDoc(userRef, { links: $authStore.links, settings: $authStore.settings }, { merge: true });
 		} catch (err) {
 			console.error("there's an error saving", err);
 		}
@@ -113,9 +145,7 @@
 			<p class="ml-2 text-base font-bold md:text-lg">MyBrowserStartupPage</p>
 		</a>
 
-		<a href="settings">
-			<SettingsIcon class="h-6 w-6"></SettingsIcon>
-		</a>
+		<div class="flex items-center"><SettingsForm data={data.form}></SettingsForm></div>
 	</div>
 
 	<div
@@ -138,7 +168,7 @@
 					<div class="flex-initial">
 						<a
 							{href}
-							target="_self"
+							target={$authStore.settings.linkOpenWay === 'current' ? '_self' : '_blank'}
 							class="flex flex-col"
 							draggable="false"
 							on:contextmenu|preventDefault={() => false}
@@ -207,13 +237,13 @@
 						New Link
 					</p></Popover.Trigger
 				>
-				<Popover.Content class="border-0 bg-slate-500/25 backdrop-blur-md rounded-xl">
+				<Popover.Content class="rounded-xl border-0 bg-slate-500/25 backdrop-blur-md">
 					<div>
 						<p class="text-white">Title</p>
 						<input
 							type="text"
 							bind:value={newTitle}
-							class="font-normal m-2 mx-auto h-10 w-full rounded-xl bg-stone-300/20 p-2 text-white"
+							class="m-2 mx-auto h-10 w-full rounded-xl bg-stone-300/20 p-2 font-normal text-white"
 						/>
 					</div>
 
@@ -222,7 +252,7 @@
 						<input
 							type="text"
 							bind:value={newHref}
-							class="font-normal m-2 mx-auto h-10 w-full rounded-xl bg-stone-300/20 p-2 text-white"
+							class="m-2 mx-auto h-10 w-full rounded-xl bg-stone-300/20 p-2 font-normal text-white"
 						/>
 					</div>
 				</Popover.Content>

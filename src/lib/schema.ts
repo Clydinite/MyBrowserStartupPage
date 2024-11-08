@@ -30,7 +30,7 @@ export const loginSchema = z.object({
 export type LoginSchema = typeof loginSchema
 
 export const settingsSchema = z.object({
-	background: z.string(),
+	background: z.enum(['ethereal', 'black']),
 	linkOpenWay: z.enum(['new', 'current'])
 })
 

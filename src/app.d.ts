@@ -8,6 +8,12 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+
+	type MyData = {
+		email: string;
+		links: { title: string; href: string }[];
+		settings: { background: "ethereal" | "black"; linkOpenWay: "new" | "current" };
+	}	
 }
 
 export {};

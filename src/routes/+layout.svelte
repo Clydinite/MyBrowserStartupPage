@@ -5,14 +5,17 @@
 	import { auth, db } from '$lib/firebase';
 	import { doc, getDoc, setDoc } from 'firebase/firestore';
 	import { authStore } from '@/stores/auth_store';
+	import { invalidate } from '$app/navigation';
 
 	const publicRoutes = ['/', '/login'];
 
 	onMount(() => {
 		console.log('mounted');
 
-		// cached links
+		// use the cached data before we have access to firebase for faster loading
 		$authStore.links = JSON.parse(localStorage.getItem('links') || '[]');
+		$authStore.settings = JSON.parse(localStorage.getItem('settings') || '{}');
+
 		console.log('cached data', $authStore.links);
 
 		// called when the component is unmounted
@@ -37,7 +40,7 @@
 			const docSnap = await getDoc(docRef);
 
 			// this is the data we'll get from the firestore and will be set to authStore
-			let dataToSetToStore: { email: string; links: { title: string; href: string }[] };
+			let dataToSetToStore: MyData;
 
 			// if the user doesn't exist in firestore
 			if (!docSnap.exists()) {
@@ -48,7 +51,11 @@
 
 				dataToSetToStore = {
 					email: user.email!,
-					links: []
+					links: [],
+					settings: {
+						background: 'ethereal',
+						linkOpenWay: 'current'
+					}
 				};
 
 				await setDoc(userRef, dataToSetToStore, { merge: true });
@@ -66,6 +73,8 @@
 
 			// update the auth store with the data we got from firestore
 			authStore.update((current) => {
+
+				debugger;
 				return {
 					...current,
 					...dataToSetToStore,
@@ -75,18 +84,25 @@
 
 			console.log('fetched data', $authStore);
 			localStorage.setItem('links', JSON.stringify($authStore.links));
+			localStorage.setItem('settings', JSON.stringify($authStore.settings));
 		});
 
 		return unsubscribe;
 	});
 </script>
 
-<div class="h-full w-full bg-cover bg-fixed bg-no-repeat">
-	<div class="particle -z-10"></div>
-	<slot />
-</div>
+{#if $authStore.settings.background === 'black'}
+	<div class="h-full w-full bg-black bg-cover bg-fixed bg-no-repeat"><slot /></div>
+{:else}
+	<div class="h-full w-full bg-cover bg-fixed bg-no-repeat">
+		<div class="particle -z-10"></div>
+		<slot />
+	</div>
+{/if}
 
 <style>
+	/* shout out to Fred for this amazing effect https://stackoverflow.com/a/71820241/16297621 */
+
 	.particle {
 		position: absolute;
 		top: 0;
@@ -130,4 +146,3 @@
 			no-repeat;
 	}
 </style>
-

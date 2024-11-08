@@ -7,16 +7,17 @@ import {
 import { type Writable, writable } from 'svelte/store';
 import { auth } from '$lib/firebase';
 
-export const authStore: Writable<{
-	user: User | null;
-	links: { title: string; href: string }[];
-	settings: { background: number; linkOpenWay: string };
-}> = writable({
+export const authStore: Writable<
+	{
+		user: User | null;
+	} & MyData
+> = writable({
 	user: null,
+	email: '',
 	links: [],
 	settings: {
-		background: 0,
-		linkOpenWay: 'new'
+		background: 'ethereal',
+		linkOpenWay: 'current'
 	}
 });
 
