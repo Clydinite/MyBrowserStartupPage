@@ -45,6 +45,7 @@
 		"firebase": "^10.11.0",
 		"formsnap": "^1.0.0",
 		"sortablejs": "^1.15.2",
+		"svelte-legos": "^0.2.5",
 		"sveltekit-superforms": "^2.12.6",
 		"tailwind-merge": "^2.2.1",
 		"tailwind-variants": "^0.2.0",

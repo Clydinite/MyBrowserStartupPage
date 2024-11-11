@@ -12,37 +12,15 @@
 	import AddIcon from '$lib/svg-icons/AddIcon.svelte';
 
 	import { db } from '$lib/firebase';
-	import { authHandlers, authStore } from '$lib/stores/auth_store';
+	import { authStore } from '$lib/stores/auth_store';
 	import { doc, getDoc, setDoc } from 'firebase/firestore';
 	import { onMount } from 'svelte';
 
 	import SettingsForm from './SettingsForm.svelte';
 
-	export let data;
-	export let form; // it will contain the settings data
-
 	$: {
-		if (form?.success) handleSettings();
-	}
-
-	//TODO: test
-	authStore.subscribe((current) => {
-		debugger;
-		console.log('auth store update', current);
-	})
-
-	async function handleSettings() {
-		if (!form) return;
-		
-		debugger;
-
-		console.log('settings', form.form.data);
-		$authStore.settings = form.form.data;
-
-		console.log(localStorage)
-		invalidate('data:settings'); // the load function in +page.server.ts will be re-run, updating the pre-populated form data
-
-		save();
+		$authStore.settings;
+		save()
 	}
 
 	// TODO: add white background if the image is transparent
@@ -117,7 +95,7 @@
 		save();
 	}
 
-	async function save() {
+	export async function save() {
 		console.log('saving', $authStore.links, $authStore.settings);
 
 		try {
@@ -129,7 +107,11 @@
 			}
 
 			const userRef = doc(db, 'users', $authStore.user.uid);
-			await setDoc(userRef, { links: $authStore.links, settings: $authStore.settings }, { merge: true });
+			await setDoc(
+				userRef,
+				{ links: $authStore.links, settings: $authStore.settings },
+				{ merge: true }
+			);
 		} catch (err) {
 			console.error("there's an error saving", err);
 		}
@@ -145,11 +127,12 @@
 			<p class="ml-2 text-base font-bold md:text-lg">MyBrowserStartupPage</p>
 		</a>
 
-		<div class="flex items-center"><SettingsForm data={data.form}></SettingsForm></div>
+		<div class="flex items-center"><SettingsForm /></div>
 	</div>
 
+	<!-- this calc thing is kinda a hack (the settings takes up exactly 48px), it might be a foot gun in the future, but who cares about the future? -->
 	<div
-		class="grid flex-grow auto-rows-min grid-cols-4 gap-2 rounded-xl bg-white/5 px-2 pt-4 shadow-lg backdrop-blur-lg md:grid-cols-6"
+		class="grid h-[calc(100vh-48px)] flex-grow auto-rows-min grid-cols-4 gap-2 rounded-xl bg-white/5 p-4 px-2 shadow-lg backdrop-blur-lg md:grid-cols-6"
 		bind:this={sortable}
 	>
 		{#each $authStore.links as { title, href }, index (title + href)}

@@ -73,7 +73,6 @@
 
 			// update the auth store with the data we got from firestore
 			authStore.update((current) => {
-
 				debugger;
 				return {
 					...current,
@@ -93,14 +92,25 @@
 	});
 </script>
 
-{#if $authStore.settings.background === 'black'}
-	<div class="h-full w-full bg-black bg-cover bg-fixed bg-no-repeat"><slot /></div>
+<div
+	class={$authStore.settings.background === 'black'
+		? 'min-h-screen h-full w-full bg-black bg-cover bg-fixed bg-no-repeat'
+		: 'min-h-screen h-full w-full bg-cover bg-fixed bg-no-repeat'}
+>
+	{#if $authStore.settings.background === 'ethereal'}
+		<div class="particle -z-10"></div>
+	{/if}
+	<slot />
+</div>
+
+<!-- {#if $authStore.settings.background === 'black'}
+	<div data-vaul-drawer-wrapper class="h-full w-full bg-black bg-cover bg-fixed bg-no-repeat"><slot /></div>
 {:else}
 	<div class="h-full w-full bg-cover bg-fixed bg-no-repeat">
 		<div class="particle -z-10"></div>
 		<slot />
 	</div>
-{/if}
+{/if} -->
 
 <style>
 	/* shout out to Fred for this amazing effect https://stackoverflow.com/a/71820241/16297621 */
