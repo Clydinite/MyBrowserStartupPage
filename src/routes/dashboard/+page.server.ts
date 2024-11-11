@@ -7,7 +7,7 @@ import { get } from 'svelte/store';
 import { authStore } from '$lib/stores/auth_store.js';
 
 export const load: PageServerLoad = async ({ depends }) => {
-	// depends('data:settings');
+	depends('data:settings');
 
 	console.log('auth store data from load', get(authStore));
 

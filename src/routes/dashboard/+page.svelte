@@ -40,7 +40,7 @@
 		$authStore.settings = form.form.data;
 
 		console.log(localStorage)
-		invalidateAll(); // the load function in +page.server.ts will be re-run, updating the pre-populated form data
+		invalidate('data:settings'); // the load function in +page.server.ts will be re-run, updating the pre-populated form data
 
 		save();
 	}

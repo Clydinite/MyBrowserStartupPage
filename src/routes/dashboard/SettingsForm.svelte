@@ -17,11 +17,13 @@
 	const form = superForm(data, {
 		validators: zodClient(settingsSchema),
 		dataType: 'json',
-		invalidateAll: 'force',
-		resetForm: false // TODO
+		resetForm: false, // TODO effects unknown
+		onUpdated() {
+			reset({ keepMessage: true });
+		}
 	});
 
-	const { form: formData, enhance } = form;
+	const { form: formData, enhance, reset } = form;
 	
 	// TODO: add other backgrounds
 	// TODO: redesign the settings panel
