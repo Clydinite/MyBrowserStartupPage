@@ -6,6 +6,7 @@
 	import { doc, getDoc, setDoc } from 'firebase/firestore';
 	import { authStore } from '@/stores/auth_store';
 	import { invalidate } from '$app/navigation';
+	import { json } from '@sveltejs/kit';
 
 	const publicRoutes = ['/', '/login'];
 
@@ -14,7 +15,16 @@
 
 		// use the cached data before we have access to firebase for faster loading
 		$authStore.links = JSON.parse(localStorage.getItem('links') || '[]');
-		$authStore.settings = JSON.parse(localStorage.getItem('settings') || '{}');
+
+		const settings = localStorage.getItem('settings')
+		if (settings) {
+			$authStore.settings = JSON.parse(settings)
+		} else {
+			$authStore.settings = {
+				background: 'ethereal',
+				linkOpenWay: 'current'
+			}
+		}
 
 		console.log('cached data', $authStore.links);
 
