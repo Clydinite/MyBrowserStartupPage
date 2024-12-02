@@ -16,14 +16,14 @@
 		// use the cached data before we have access to firebase for faster loading
 		$authStore.links = JSON.parse(localStorage.getItem('links') || '[]');
 
-		const settings = localStorage.getItem('settings')
+		const settings = localStorage.getItem('settings');
 		if (settings) {
-			$authStore.settings = JSON.parse(settings)
+			$authStore.settings = JSON.parse(settings);
 		} else {
 			$authStore.settings = {
 				background: 'ethereal',
 				linkOpenWay: 'current'
-			}
+			};
 		}
 
 		console.log('cached data', $authStore.links);
@@ -102,37 +102,24 @@
 	});
 </script>
 
-<div
-	class={$authStore.settings.background === 'black'
-		? 'min-h-screen h-full w-full bg-black bg-cover bg-fixed bg-no-repeat'
-		: 'min-h-screen h-full w-full bg-cover bg-fixed bg-no-repeat'}
->
+<div class={($authStore.settings.background === 'black' ? ' bg-black' : '') + 'h-full w-full'}>
 	{#if $authStore.settings.background === 'ethereal'}
-		<div class="particle -z-10"></div>
+		<div class="particle"></div>
 	{/if}
 	<slot />
 </div>
 
-<!-- {#if $authStore.settings.background === 'black'}
-	<div data-vaul-drawer-wrapper class="h-full w-full bg-black bg-cover bg-fixed bg-no-repeat"><slot /></div>
-{:else}
-	<div class="h-full w-full bg-cover bg-fixed bg-no-repeat">
-		<div class="particle -z-10"></div>
-		<slot />
-	</div>
-{/if} -->
-
 <style>
 	/* shout out to Fred for this amazing effect https://stackoverflow.com/a/71820241/16297621 */
-
 	.particle {
-		position: absolute;
+		position: fixed;
 		top: 0;
 		left: 0;
-		width: 100%;
-		height: 100%;
+		width: 100vw;
+		height: 100vh;
 		background-color: #191b1f;
 		overflow: clip;
+		z-index: -10;
 	}
 
 	.particle::after,
@@ -153,12 +140,14 @@
 		right: 0;
 		transform: translate(50%, -50%);
 	}
+
 	.particle::after {
 		top: 50%;
 		left: 0px;
 		transform: translateX(-50%);
 	}
-	/*With gradient background*/
+
+	/* with gradient background */
 	.particle {
 		background: radial-gradient(
 				circle closest-corner at center 125px,

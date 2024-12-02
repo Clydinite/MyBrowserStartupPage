@@ -118,7 +118,7 @@
 	}
 </script>
 
-<div class="flex h-full w-full flex-col p-4 sm:p-8">
+<div class="flex h-screen w-full flex-col p-4 sm:p-8">
 	<div
 		class="mb-4 flex w-full items-center justify-between rounded-xl bg-white/10 p-2 px-2 shadow-lg backdrop-blur-lg sm:mb-8"
 	>
@@ -132,7 +132,7 @@
 
 	<!-- this calc thing is kinda a hack (the settings takes up exactly 48px), it might be a foot gun in the future, but who cares about the future? -->
 	<div
-		class="grid h-[calc(100vh-48px)] flex-grow auto-rows-min grid-cols-4 gap-2 rounded-xl bg-white/5 p-4 px-2 shadow-lg backdrop-blur-lg md:grid-cols-6"
+		class="grid h-[calc(100svh-48px)] flex-grow auto-rows-min grid-cols-4 gap-2 rounded-xl bg-white/5 p-4 px-2 shadow-lg backdrop-blur-lg md:grid-cols-6"
 		bind:this={sortable}
 	>
 		{#each $authStore.links as { title, href }, index (title + href)}
