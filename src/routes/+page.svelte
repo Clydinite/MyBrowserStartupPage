@@ -29,8 +29,4 @@
 	<p class="rounded-lg bg-white/20 p-4">
 		Also, you can submit a pull request if you have any improvements or new features in mind!
 	</p>
-
-	<p class="rounded-lg bg-white/20 p-4">
-		Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum magnam cupiditate, facilis earum libero consectetur alias quidem quas aut incidunt ipsam nesciunt officia nobis sit, ratione rerum autem sequi modi!
-	</p>
 </div>
